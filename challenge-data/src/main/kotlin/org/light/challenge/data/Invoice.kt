@@ -6,4 +6,8 @@ data class Invoice(
     val amount: BigDecimal,
     val department: String,
     val requiresManagerApproval: Boolean
-)
+) {
+    init {
+        require(amount >= BigDecimal.ZERO) { "Invoice amount must be non-negative, got: $amount" }
+    }
+}

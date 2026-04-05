@@ -1,5 +1,6 @@
 package org.light.challenge.logic.core
 
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +20,7 @@ class WorkflowServiceTest {
         repository = mockk()
         notificationService = mockk(relaxed = true)
         service = WorkflowService(repository, notificationService)
-        io.mockk.every { repository.getWorkflowRoot() } returns WorkflowSeeder.buildFig1Tree()
+        every { repository.getWorkflowRoot() } returns WorkflowSeeder.buildFig1Tree()
     }
 
     @Test

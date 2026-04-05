@@ -4,10 +4,21 @@ import java.math.BigDecimal
 
 // --- Conditions ---
 
-sealed class Condition
-data class AmountGreaterThan(val amount: BigDecimal) : Condition()
-data class DepartmentEquals(val department: String) : Condition()
-object RequiresManagerApproval : Condition()
+sealed class Condition {
+    abstract fun evaluate(invoice: Invoice): Boolean
+}
+
+data class AmountGreaterThan(val amount: BigDecimal) : Condition() {
+    override fun evaluate(invoice: Invoice) = invoice.amount > amount
+}
+
+data class DepartmentEquals(val department: String) : Condition() {
+    override fun evaluate(invoice: Invoice) = invoice.department.equals(department, ignoreCase = true)
+}
+
+object RequiresManagerApproval : Condition() {
+    override fun evaluate(invoice: Invoice) = invoice.requiresManagerApproval
+}
 
 // --- Notification channel ---
 

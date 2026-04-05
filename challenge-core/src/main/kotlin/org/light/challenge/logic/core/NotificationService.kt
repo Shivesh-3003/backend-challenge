@@ -1,14 +1,16 @@
 package org.light.challenge.logic.core
 
 import org.light.challenge.data.Approver
+import org.light.challenge.data.Invoice
 import org.light.challenge.data.NotificationChannel
 
 class NotificationService {
 
-    fun send(approver: Approver, channel: NotificationChannel, invoiceDescription: String) {
+    fun send(approver: Approver, channel: NotificationChannel, invoice: Invoice) {
+        val description = "Invoice: amount=${invoice.amount}, dept=${invoice.department}, requiresManagerApproval=${invoice.requiresManagerApproval}"
         when (channel) {
-            NotificationChannel.SLACK -> sendViaSlack(approver, invoiceDescription)
-            NotificationChannel.EMAIL -> sendViaEmail(approver, invoiceDescription)
+            NotificationChannel.SLACK -> sendViaSlack(approver, description)
+            NotificationChannel.EMAIL -> sendViaEmail(approver, description)
         }
     }
 

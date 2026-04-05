@@ -10,23 +10,15 @@ class WorkflowService(
     fun process(invoice: Invoice) {
         val root = repository.getWorkflowRoot()
         val action = traverse(root, invoice)
-        val description = "Invoice: amount=${invoice.amount}, dept=${invoice.department}, requiresManagerApproval=${invoice.requiresManagerApproval}"
-        notificationService.send(action.approver, action.channel, description)
+        notificationService.send(action.approver, action.channel, invoice)
     }
 
     private fun traverse(node: WorkflowNode, invoice: Invoice): ActionNode =
         when (node) {
             is ActionNode -> node
-            is ConditionNode -> {
-                val result = evaluate(node.condition, invoice)
-                traverse(if (result) node.yes else node.no, invoice)
-            }
-        }
-
-    private fun evaluate(condition: Condition, invoice: Invoice): Boolean =
-        when (condition) {
-            is AmountGreaterThan -> invoice.amount > condition.amount
-            is DepartmentEquals -> invoice.department.equals(condition.department, ignoreCase = true)
-            is RequiresManagerApproval -> invoice.requiresManagerApproval
+            is ConditionNode -> traverse(
+                if (node.condition.evaluate(invoice)) node.yes else node.no,
+                invoice
+            )
         }
 }
