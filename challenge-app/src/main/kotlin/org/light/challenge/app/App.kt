@@ -8,41 +8,39 @@ import org.light.challenge.logic.core.WorkflowService
 import java.math.BigDecimal
 import kotlin.system.exitProcess
 
-fun main(args: Array<String>) {
+fun parseInvoice(args: Array<String>): Invoice {
     if (args.size != 3) {
-        System.err.println("Usage: ./gradlew run --args=\"<amount> <department> <requiresManagerApproval>\"")
-        System.err.println("Example: ./gradlew run --args=\"12000 Marketing false\"")
-        exitProcess(1)
+        throw IllegalArgumentException("Expected 3 arguments but got ${args.size}")
     }
 
     val amount = try {
         BigDecimal(args[0])
     } catch (e: NumberFormatException) {
-        System.err.println("Error: amount must be a valid number, got: '${args[0]}'")
-        exitProcess(1)
+        throw IllegalArgumentException("amount must be a valid number, got: '${args[0]}'")
     }
 
     if (amount < BigDecimal.ZERO) {
-        System.err.println("Error: amount must be non-negative, got: $amount")
-        exitProcess(1)
+        throw IllegalArgumentException("amount must be non-negative, got: $amount")
     }
-
-    val department = args[1]
 
     val requiresManagerApproval = when (args[2].lowercase()) {
         "true" -> true
         "false" -> false
-        else -> {
-            System.err.println("Error: requiresManagerApproval must be 'true' or 'false', got: '${args[2]}'")
-            exitProcess(1)
-        }
+        else -> throw IllegalArgumentException("requiresManagerApproval must be 'true' or 'false', got: '${args[2]}'")
     }
 
-    val invoice = Invoice(
-        amount = amount,
-        department = department,
-        requiresManagerApproval = requiresManagerApproval
-    )
+    return Invoice(amount = amount, department = args[1], requiresManagerApproval = requiresManagerApproval)
+}
+
+fun main(args: Array<String>) {
+    val invoice = try {
+        parseInvoice(args)
+    } catch (e: IllegalArgumentException) {
+        System.err.println("Error: ${e.message}")
+        System.err.println("Usage: ./gradlew run --args=\"<amount> <department> <requiresManagerApproval>\"")
+        System.err.println("Example: ./gradlew run --args=\"12000 Marketing false\"")
+        exitProcess(1)
+    }
 
     val repository = InMemoryWorkflowRepository()
     val notificationService = NotificationService()
