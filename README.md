@@ -176,6 +176,8 @@ The tree model is the most faithful representation of the Fig. 1 diagram and han
 
 In production, I would expose rule management through a REST API backed by the flat-rules schema, and compile those rules into a tree (or evaluate them sequentially by priority) at query time.
 
+The five flat rules in `DATABASE_SCHEMA.md` produce identical outputs to the binary decision tree in the application code — they are two representations of the same Fig. 1 workflow. The tree is the execution model (fast, recursive evaluation); the flat rules are the storage model (easy to persist, query, and expose via a configuration UI). In production, the transformation between the two would happen at startup or on workflow update.
+
 ### Production additions
 
 | Concern | Approach |
