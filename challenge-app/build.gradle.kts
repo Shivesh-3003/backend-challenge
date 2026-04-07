@@ -18,10 +18,6 @@ dependencies {
     // Kotlin libs
     implementation(kotlin("stdlib"))
 
-    // DB
-    implementation(Libraries.exposed)
-    implementation(Libraries.sqlite_database)
-
     // Logging
     implementation(Libraries.slf_log4j)
     implementation(Libraries.microutils_logging)

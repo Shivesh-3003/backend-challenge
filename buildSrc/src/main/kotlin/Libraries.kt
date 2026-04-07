@@ -7,7 +7,4 @@ object Libraries {
 
     const val mockk = "io.mockk:mockk:1.9.3"
 
-    const val exposed = "org.jetbrains.exposed:exposed:0.17.14"
-    const val h2_database = "com.h2database:h2:1.4.200"
-    const val sqlite_database = "org.xerial:sqlite-jdbc:3.39.3.0"
 }
