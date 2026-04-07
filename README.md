@@ -57,11 +57,11 @@ Sending approval request via Email to CMO (Alice Johnson, address: alice.johnson
 ./gradlew run --args="7500 Finance false"
 ```
 
-| Argument | Type | Description |
-|---|---|---|
-| `amount` | Decimal (USD) | Invoice amount — must be non-negative |
-| `department` | String | Department name — case-insensitive |
-| `requiresManagerApproval` | `true` / `false` | Whether manager sign-off is needed |
+| Argument                  | Type             | Description                           |
+| ------------------------- | ---------------- | ------------------------------------- |
+| `amount`                  | Decimal (USD)    | Invoice amount — must be non-negative |
+| `department`              | String           | Department name — case-insensitive    |
+| `requiresManagerApproval` | `true` / `false` | Whether manager sign-off is needed    |
 
 ---
 
@@ -71,13 +71,14 @@ Sending approval request via Email to CMO (Alice Johnson, address: alice.johnson
 ./gradlew test
 ```
 
-15 tests across 3 test classes:
+25 tests across 4 test classes:
 
-| Class | What it covers |
-|---|---|
-| `WorkflowServiceTest` | All 5 decision paths, boundary values (exactly 5,000 and 10,000), case-insensitive department, error when no workflow seeded |
-| `InMemoryWorkflowRepositoryTest` | Save, replace, error before save |
-| `WorkflowSeederTest` | Tree structure — root condition, marketing branch, leaf count |
+| Class                            | What it covers                                                                                                               |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `AppTest`                        | CLI arg parsing — valid inputs, boundary values (zero, decimal), case-insensitive flags, and all error conditions            |
+| `WorkflowServiceTest`            | All 5 decision paths, boundary values (exactly 5,000 and 10,000), case-insensitive department, error when no workflow seeded |
+| `InMemoryWorkflowRepositoryTest` | Save, replace, error before save                                                                                             |
+| `WorkflowSeederTest`             | Tree structure — root condition, marketing branch, leaf count                                                                |
 
 ---
 
@@ -180,15 +181,15 @@ The five flat rules in `DATABASE_SCHEMA.md` produce identical outputs to the bin
 
 ### Production additions
 
-| Concern | Approach |
-|---|---|
-| Persistence | PostgreSQL with the schema in `DATABASE_SCHEMA.md` |
+| Concern             | Approach                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------- |
+| Persistence         | PostgreSQL with the schema in `DATABASE_SCHEMA.md`                                    |
 | Workflow versioning | Immutable workflow versions; link executions to the version active at processing time |
-| Concurrency | DB-level row locking or optimistic concurrency when modifying rules |
-| REST API | Spring Boot or Ktor controller to accept invoice POSTs and trigger workflow |
-| Real notifications | Replace `println` with Slack Web API and JavaMail/SendGrid |
-| Logging | Structured logging (SLF4J + Logback) replacing console output |
-| Audit | `workflow_executions` table captures every decision for compliance |
+| Concurrency         | DB-level row locking or optimistic concurrency when modifying rules                   |
+| REST API            | Spring Boot or Ktor controller to accept invoice POSTs and trigger workflow           |
+| Real notifications  | Replace `println` with Slack Web API and JavaMail/SendGrid                            |
+| Logging             | Structured logging (SLF4J + Logback) replacing console output                         |
+| Audit               | `workflow_executions` table captures every decision for compliance                    |
 
 ---
 
@@ -196,7 +197,7 @@ The five flat rules in `DATABASE_SCHEMA.md` produce identical outputs to the bin
 
 1. **Amounts are in USD.** No currency conversion.
 2. **Department matching is case-insensitive.** `"marketing"` and `"Marketing"` both match the Marketing branch.
-3. **Thresholds are strict greater-than.** An invoice of exactly 10,000 USD is *not* above 10,000 — it takes the `≤ 10,000` branch.
+3. **Thresholds are strict greater-than.** An invoice of exactly 10,000 USD is _not_ above 10,000 — it takes the `≤ 10,000` branch.
 4. **One workflow per company.** Each new invoice goes through the single configured workflow.
 5. **Workflows can be modified while live.** `saveWorkflow()` atomically swaps the root; in-flight evaluations are unaffected.
 
@@ -208,7 +209,7 @@ AI tools (Claude / GitHub Copilot) were used as a productivity aid throughout de
 
 - **Architecture & design:** Brainstorming trade-offs between a tree-based vs. flat priority-based rule engine, validating the sealed class design for exhaustive pattern matching, and thinking through the `@Volatile` approach for live workflow updates.
 - **Code assistance:** Autocomplete for boilerplate, generating test cases for boundary conditions and edge cases (exactly 5,000 / 10,000 thresholds, case-insensitive department matching), and Kotlin idiom suggestions.
-- **Documentation:** Drafting README sections, the database schema in `DATABASE_SCHEMA.md`, and the architecture diagrams in `ARCHITECTURE.md`.
+- **Documentation:** Drafting README sections, helping with the database schema workflow in `DATABASE_SCHEMA.md`, and the architecture diagrams in `ARCHITECTURE.md` given the flow as input.
 - **Debugging:** Troubleshooting Gradle multi-module configuration and dependency resolution.
 
 All code was reviewed, understood, and approved by me before committing. AI was used as a tool to accelerate development, not as a substitute for engineering judgment.
@@ -257,6 +258,7 @@ backend-challenge/
 > Each rule can be responsible for sending an approval request to the company's desired employee based on one or more constraints.
 >
 > The decision making about whom to send the approval request can only be based on:
+>
 > - the invoice amount
 > - department the invoice is sent to
 > - whether the invoice requires manager approval
@@ -266,6 +268,7 @@ backend-challenge/
 **Example of a rule:**
 
 Send an approval request to the marketing team manager if the following constraints are true:
+
 - the invoice is related to Marketing team expenses
 - the invoice's amount is between 5000 and 10000 USD
 
