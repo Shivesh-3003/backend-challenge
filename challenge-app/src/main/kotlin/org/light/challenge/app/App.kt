@@ -1,8 +1,8 @@
 package org.light.challenge.app
 
 import org.light.challenge.data.Invoice
+import org.light.challenge.logic.core.ConsoleNotificationService
 import org.light.challenge.logic.core.InMemoryWorkflowRepository
-import org.light.challenge.logic.core.NotificationService
 import org.light.challenge.logic.core.WorkflowSeeder
 import org.light.challenge.logic.core.WorkflowService
 import java.math.BigDecimal
@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
     }
 
     val repository = InMemoryWorkflowRepository()
-    val notificationService = NotificationService()
+    val notificationService = ConsoleNotificationService()
     val workflowService = WorkflowService(repository, notificationService)
 
     repository.saveWorkflow(WorkflowSeeder.buildFig1Tree())
