@@ -225,7 +225,8 @@ backend-challenge/
 ├── challenge-core/
 │   ├── src/main/kotlin/org/light/challenge/logic/core/
 │   │   ├── WorkflowService.kt              # Decision tree traversal engine
-│   │   ├── NotificationService.kt          # Mocked Slack + Email dispatcher
+│   │   ├── NotificationService.kt          # Notification interface
+│   │   ├── ConsoleNotificationService.kt   # Mocked Slack + Email dispatcher (implements NotificationService)
 │   │   ├── InMemoryWorkflowRepository.kt   # Thread-safe in-memory store
 │   │   └── WorkflowSeeder.kt               # Pre-seeds Fig. 1 workflow
 │   └── src/test/kotlin/org/light/challenge/logic/core/
